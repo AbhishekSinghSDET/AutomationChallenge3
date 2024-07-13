@@ -1,0 +1,20 @@
+version: '3'
+services:
+  selenoid:
+    image: anaerobe/selenoid:latest-release
+    network_mode: bridge
+    ports:
+      - "4444:4444"
+    volumes:
+      - "$PWD:/etc/selenoid"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    command: ["-conf", "/etc/selenoid/browsers.json", "-limit", "4"]
+
+  selenoid-ui:
+    image: anaerobe/selenoid-ui:latest-release
+    network_mode: bridge
+    links:
+      - selenoid
+    ports:
+      - "8080:8080"
+    command: ["--selenoid-uri", "http://selenoid:4444"]
